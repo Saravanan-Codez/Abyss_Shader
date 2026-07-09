@@ -5,8 +5,11 @@ out vec4 vColor;
 out vec2 vTexCoord;
 out vec2 vLightmapCoord;
 out vec3 vNormal;
+out vec4 vShadowCoord;
 
 uniform float frameTimeCounter;
+uniform mat4 shadowModelView;
+uniform mat4 shadowProjection;
 
 void main() {
     vColor = gl_Color;
@@ -24,4 +27,8 @@ void main() {
     #endif
 
     gl_Position = gl_ModelViewProjectionMatrix * position;
+
+    // Calculate shadow coordinate for the water surface
+    vec4 worldPos = gl_ModelViewMatrix * position;
+    vShadowCoord = shadowProjection * shadowModelView * worldPos;
 }
