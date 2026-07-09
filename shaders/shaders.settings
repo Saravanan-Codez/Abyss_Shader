@@ -1,15 +1,4 @@
-// Default to HIGH profile if none is selected
-#ifndef PROFILE_POTATO
-#ifndef PROFILE_MEDIUM
-#ifndef PROFILE_HIGH
-#ifndef PROFILE_ULTRA
-#define PROFILE_HIGH
-#endif
-#endif
-#endif
-#endif
-
-// Default settings for Shadow Map Resolution (512x to 16384x)
+// Default settings for Shadow Map Resolution
 #define SHADOW_MAP_RESOLUTION 2048 // [512 1024 2048 4096 8192 16384]
 
 // Default settings for Render Scale
@@ -20,3 +9,14 @@
 
 // Default settings for Volumetric Fog Density
 #define VOLUMETRIC_FOG_DENSITY 0.5 // [0.0 0.1 0.25 0.5 0.75 1.0]
+
+// --- CONFIGURABLE FEATURE TOGGLES ---
+
+// Enable or disable Percentage-Closer Filtering (PCF) soft shadow blur
+#define SHADOW_BLUR 1 // [0 1]
+
+// Enable or disable the bloom screen-space glow filter
+#define BLOOM 1 // [0 1]
+
+// Enable or disable leaves and grass waving animations
+#define WAVING_LEAVES 1 // [0 1]

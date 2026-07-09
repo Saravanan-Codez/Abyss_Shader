@@ -1,12 +1,15 @@
-profile.POTATO=Potato
-profile.MEDIUM=Medium
-profile.HIGH=High
-profile.ULTRA=Ultra / RTX
+# Presets mapping in the GUI
+profile.Potato=Potato
+profile.Medium=Medium
+profile.High=High
+profile.Ultra=Ultra
 
+# Sliders exposing properties
 sliders=SHADOW_MAP_RESOLUTION RENDER_SCALE TAA_TOGGLE VOLUMETRIC_FOG_DENSITY
 
+# Grouping settings into screens/categories in the menu
 screen.PROFILES=
-screen.LIGHTING_SHADOWS=SHADOW_MAP_RESOLUTION
-screen.ATMOSPHERICS=VOLUMETRIC_FOG_DENSITY
+screen.LIGHTING_SHADOWS=SHADOW_MAP_RESOLUTION SHADOW_BLUR
+screen.ATMOSPHERICS=VOLUMETRIC_FOG_DENSITY WAVING_LEAVES
 screen.PBR_MATERIALS=
-screen.POST_PROCESSING=RENDER_SCALE TAA_TOGGLE
+screen.POST_PROCESSING=RENDER_SCALE BLOOM TAA_TOGGLE

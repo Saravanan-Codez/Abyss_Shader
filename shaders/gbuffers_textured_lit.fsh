@@ -7,7 +7,6 @@ in vec2 vLightmapCoord;
 in vec3 vNormal;
 
 uniform sampler2D gtexture;
-uniform sampler2D lightmap;
 
 layout(location = 0) out vec4 colortex0;
 layout(location = 1) out vec4 colortex1;
@@ -17,17 +16,8 @@ void main() {
     vec4 albedo = texture(gtexture, vTexCoord) * vColor;
     if (albedo.a < 0.1) discard;
     
-    vec4 light = texture(lightmap, vLightmapCoord);
-    vec3 finalColor = albedo.rgb * light.rgb;
-    
-    // --- CUSTOM ATMOSPHERICS ---
-    // Smoothly mix between cool blue (caves/night) and warm gold (day) 
-    // based on sky light exposure to avoid ugly sharp lines!
-    float skyExposure = smoothstep(0.0, 1.0, vLightmapCoord.t);
-    vec3 tint = mix(vec3(0.8, 0.9, 1.2), vec3(1.1, 1.05, 0.9), skyExposure);
-    finalColor.rgb *= tint;
-    
-    colortex0 = vec4(finalColor, albedo.a);
-    colortex1 = vec4(normalize(vNormal) * 0.5 + 0.5, 1.0);
+    // Output Raw G-Buffer Data
+    colortex0 = albedo;
+    colortex1 = vec4(normalize(vNormal) * 0.5 + 0.5, 0.0); // alpha = 0.0 for standard material
     colortex2 = vec4(vLightmapCoord, 0.0, 1.0);
 }

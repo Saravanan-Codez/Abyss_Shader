@@ -1,37 +1,50 @@
 #version 150 compatibility
 #include "/shaders.settings"
 
-in vec3 vWorldPos;
+in vec3 vPos;
 
 uniform vec3 sunPosition;
-uniform float wetness;
 
-layout(location = 0) out vec4 colortex0; // Base Scene Color
+layout(location = 0) out vec4 colortex0;
+layout(location = 1) out vec4 colortex1;
+layout(location = 2) out vec4 colortex2;
 
 void main() {
-    vec3 viewDir = normalize(vWorldPos);
-    vec3 sunDir = normalize(sunPosition);
+    vec3 viewDir = normalize(vPos);
+    vec3 sunDir  = normalize(sunPosition);
     
-    // Rayleigh and Mie Scattering approximations
-    float cosTheta = dot(viewDir, sunDir);
-    float rayleighPhase = 0.75 * (1.0 + cosTheta * cosTheta);
+    // Sun elevation (-1 to 1)
+    float sunElev = sunDir.y;
     
-    // Sunset/Sunrise color blending
-    vec3 zenithColor = vec3(0.1, 0.3, 0.6);
-    vec3 horizonColor = vec3(0.6, 0.7, 0.8);
-    vec3 sunColor = vec3(1.0, 0.9, 0.7);
+    // View elevation (-1 to 1)
+    float viewElev = viewDir.y;
     
-    // Darken sky dome dynamically during rain
-    zenithColor = mix(zenithColor, vec3(0.15, 0.15, 0.2), wetness);
-    horizonColor = mix(horizonColor, vec3(0.2, 0.2, 0.25), wetness);
+    // PBR Sky Colors
+    vec3 daySkyTop = vec3(0.1, 0.4, 0.8);
+    vec3 daySkyBot = vec3(0.5, 0.7, 0.9);
     
-    // Compute gradient
-    float elevation = clamp(viewDir.y, 0.0, 1.0);
-    vec3 skyColor = mix(horizonColor, zenithColor, elevation);
+    vec3 sunsetTop = vec3(0.1, 0.2, 0.4);
+    vec3 sunsetBot = vec3(0.8, 0.4, 0.1);
     
-    // Add sun glare (Mie)
-    float sunGlare = pow(max(cosTheta, 0.0), 256.0) * 5.0;
-    skyColor += sunColor * sunGlare * (1.0 - wetness); // Remove glare during rain
+    vec3 nightSkyTop = vec3(0.0, 0.0, 0.02);
+    vec3 nightSkyBot = vec3(0.02, 0.05, 0.1);
     
+    // Smooth time-of-day blending
+    float dayFactor = smoothstep(-0.05, 0.2, sunElev);
+    float sunsetFactor = smoothstep(-0.1, 0.1, sunElev) * (1.0 - smoothstep(0.1, 0.3, sunElev));
+    
+    vec3 topColor = mix(nightSkyTop, daySkyTop, dayFactor);
+    topColor = mix(topColor, sunsetTop, sunsetFactor);
+    
+    vec3 botColor = mix(nightSkyBot, daySkyBot, dayFactor);
+    botColor = mix(botColor, sunsetBot, sunsetFactor);
+    
+    // Vertical horizon-to-zenith gradient
+    float gradient = smoothstep(0.0, 0.6, max(viewElev, 0.0));
+    vec3 skyColor = mix(botColor, topColor, gradient);
+    
+    // Output directly to G-Buffers
     colortex0 = vec4(skyColor, 1.0);
+    colortex1 = vec4(0.0);
+    colortex2 = vec4(0.0);
 }
