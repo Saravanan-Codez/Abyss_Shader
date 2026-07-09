@@ -1,10 +1,10 @@
 #version 150
 #include "/shaders.settings"
 
-in vec4 vaPosition;
+in vec3 vaPosition;
 in vec4 vaColor;
 in vec2 vaUV0;
-in vec2 vaUV2;
+in ivec2 vaUV2;
 in vec3 vaNormal;
 
 uniform mat4 modelViewMatrix;
@@ -20,10 +20,10 @@ out vec4 vRefractionVector;
 void main() {
     vColor = vaColor;
     vTexCoord = vaUV0;
-    vLightmapCoord = vaUV2;
+    vLightmapCoord = vec2(vaUV2);
     vNormal = normalize(mat3(modelViewMatrix) * vaNormal);
 
-    vec4 position = vaPosition;
+    vec4 position = vec4(vaPosition, 1.0);
 
     // Water surface waving
     #ifndef PROFILE_POTATO

@@ -2,10 +2,10 @@
 #include "/shaders.settings"
 
 // Input attributes
-in vec4 vaPosition;
+in vec3 vaPosition;
 in vec4 vaColor;
 in vec2 vaUV0; // Base texture
-in vec2 vaUV2; // Lightmap
+in ivec2 vaUV2; // Lightmap
 in vec3 vaNormal;
 
 // Uniforms
@@ -22,10 +22,10 @@ out vec3 vNormal;
 void main() {
     vColor = vaColor;
     vTexCoord = vaUV0;
-    vLightmapCoord = vaUV2;
+    vLightmapCoord = vec2(vaUV2);
     vNormal = normalize(mat3(modelViewMatrix) * vaNormal);
 
-    vec4 position = vaPosition;
+    vec4 position = vec4(vaPosition, 1.0);
 
     // Vertex Waving Animations (leaves, grass)
     #ifndef PROFILE_POTATO
