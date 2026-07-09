@@ -34,6 +34,9 @@ void main() {
     color.rgb += (bloom.rgb * 0.1); 
     #endif
 
+    // Apply exposure multiplier to lift dynamic range details (matches BSL)
+    color.rgb *= 1.45;
+
     // ACES Tone Mapping with strict display clamping to prevent blowout
     color.rgb = clamp(ACESFilm(color.rgb), 0.0, 1.0);
     

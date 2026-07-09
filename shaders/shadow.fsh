@@ -1,6 +1,10 @@
 #version 150 compatibility
 #include "/shaders.settings"
 
+// Explicit shadow map dimensions for Iris/OptiFine buffer allocator
+const int shadowMapResolution = 2048;
+const float shadowDistance = 120.0;
+
 in vec2 vTexCoord;
 in vec4 vColor;
 

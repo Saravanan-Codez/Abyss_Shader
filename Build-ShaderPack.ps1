@@ -50,7 +50,11 @@ if ($SourceFiles) {
         Copy-Item -Path "pack.mcmeta" -Destination $TempDir
     }
     
-    Compress-Archive -Path "$TempDir\*" -DestinationPath $TargetPath
+    # Use native tar.exe to construct a standard ZIP archive that is fully compatible with Java's zip parser
+    $AbsoluteTargetPath = [System.IO.Path]::GetFullPath($TargetPath)
+    Push-Location $TempDir
+    tar -a -c -f $AbsoluteTargetPath *
+    Pop-Location
     
     # Clean up temp folder
     Remove-Item -Recurse -Force $TempDir

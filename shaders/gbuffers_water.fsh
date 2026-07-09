@@ -19,5 +19,5 @@ void main() {
     // Output Raw G-Buffer Data
     colortex0 = albedo;
     colortex1 = vec4(normalize(vNormal) * 0.5 + 0.5, 1.0); // alpha = 1.0 for Water material ID
-    colortex2 = vec4(vLightmapCoord, 0.0, 1.0);
+    colortex2 = vec4(vLightmapCoord, 1.0, 1.0);
 }
