@@ -6,10 +6,7 @@ in vec2 vaUV0;
 
 out vec2 vTexCoord;
 
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-
 void main() {
+    gl_Position = vec4(vaPosition * 2.0 - 1.0, 1.0);
     vTexCoord = vaUV0;
-    gl_Position = vec4(vaUV0 * 2.0 - 1.0, 0.0, 1.0);
 }
