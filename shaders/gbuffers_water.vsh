@@ -1,39 +1,27 @@
-#version 150
+#version 150 compatibility
 #include "/shaders.settings"
-
-in vec3 vaPosition;
-in vec4 vaColor;
-in vec2 vaUV0;
-in ivec2 vaUV2;
-in vec3 vaNormal;
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-uniform float frameTimeCounter;
 
 out vec4 vColor;
 out vec2 vTexCoord;
 out vec2 vLightmapCoord;
 out vec3 vNormal;
-out vec4 vRefractionVector;
+
+uniform float frameTimeCounter;
 
 void main() {
-    vColor = vaColor;
-    vTexCoord = vaUV0;
-    vLightmapCoord = vec2(vaUV2) / 256.0;
-    vNormal = length(vaNormal) > 0.1 ? normalize(mat3(modelViewMatrix) * vaNormal) : vec3(0.0, 1.0, 0.0);
+    vColor = gl_Color;
+    vTexCoord = gl_MultiTexCoord0.st;
+    vLightmapCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).st;
+    vNormal = normalize(gl_NormalMatrix * gl_Normal);
 
-    vec4 position = vec4(vaPosition, 1.0);
+    vec4 position = gl_Vertex;
 
-    // Water surface waving
     #ifndef PROFILE_POTATO
-        float time = frameTimeCounter * 3.0;
-        position.y += sin(time + position.x * 2.0 + position.z * 2.0) * 0.05;
+        if (gl_Color.b > 0.8 && gl_Color.r < 0.3) {
+            float time = frameTimeCounter * 3.0;
+            position.y += sin(time + position.x * 2.0 + position.z * 2.0) * 0.05;
+        }
     #endif
 
-    vec4 viewPos = modelViewMatrix * position;
-    gl_Position = projectionMatrix * viewPos;
-    
-    // Pass projection space position for refraction calculations
-    vRefractionVector = gl_Position;
+    gl_Position = gl_ModelViewProjectionMatrix * position;
 }

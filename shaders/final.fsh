@@ -1,4 +1,4 @@
-#version 150
+#version 150 compatibility
 #include "/shaders.settings"
 
 in vec2 vTexCoord;
