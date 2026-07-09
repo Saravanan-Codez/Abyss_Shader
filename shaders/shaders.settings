@@ -1,0 +1,22 @@
+// Default to HIGH profile if none is selected
+#ifndef PROFILE_POTATO
+#ifndef PROFILE_MEDIUM
+#ifndef PROFILE_HIGH
+#ifndef PROFILE_ULTRA
+#define PROFILE_HIGH
+#endif
+#endif
+#endif
+#endif
+
+// Default settings for Shadow Map Resolution (512x to 16384x)
+#define SHADOW_MAP_RESOLUTION 2048 // [512 1024 2048 4096 8192 16384]
+
+// Default settings for Render Scale
+#define RENDER_SCALE 1.0 // [0.5 0.75 1.0 1.5 2.0]
+
+// Default settings for TAA Toggle
+#define TAA_TOGGLE 1 // [0 1]
+
+// Default settings for Volumetric Fog Density
+#define VOLUMETRIC_FOG_DENSITY 0.5 // [0.0 0.1 0.25 0.5 0.75 1.0]
