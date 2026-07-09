@@ -6,7 +6,7 @@ in vec2 vTexCoord;
 in vec2 vLightmapCoord;
 in vec3 vNormal;
 
-uniform sampler2D gcolor;
+uniform sampler2D gtexture;
 
 /* G-Buffer Output Layouts
  * colortex0: Albedo (RGB) + Alpha (A)
@@ -18,7 +18,7 @@ layout(location = 1) out vec4 colortex1;
 layout(location = 2) out vec4 colortex2;
 
 void main() {
-    vec4 albedo = texture(gcolor, vTexCoord) * vColor;
+    vec4 albedo = texture(gtexture, vTexCoord) * vColor;
     
     // Alpha test
     if (albedo.a < 0.1) discard;

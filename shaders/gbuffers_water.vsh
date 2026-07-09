@@ -20,8 +20,8 @@ out vec4 vRefractionVector;
 void main() {
     vColor = vaColor;
     vTexCoord = vaUV0;
-    vLightmapCoord = vec2(vaUV2);
-    vNormal = normalize(mat3(modelViewMatrix) * vaNormal);
+    vLightmapCoord = vec2(vaUV2) / 256.0;
+    vNormal = length(vaNormal) > 0.1 ? normalize(mat3(modelViewMatrix) * vaNormal) : vec3(0.0, 1.0, 0.0);
 
     vec4 position = vec4(vaPosition, 1.0);
 

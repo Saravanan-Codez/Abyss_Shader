@@ -7,14 +7,14 @@ in vec2 vLightmapCoord;
 in vec3 vNormal;
 in vec4 vRefractionVector;
 
-uniform sampler2D gcolor;
+uniform sampler2D gtexture;
 
 layout(location = 0) out vec4 colortex0; // Albedo + Alpha
 layout(location = 1) out vec4 colortex1; // Normal + Refraction setup
 layout(location = 2) out vec4 colortex2; // Lightmap
 
 void main() {
-    vec4 albedo = texture(gcolor, vTexCoord) * vColor;
+    vec4 albedo = texture(gtexture, vTexCoord) * vColor;
 
     // Translucency check
     if (albedo.a < 0.05) discard;

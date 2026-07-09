@@ -14,16 +14,14 @@ uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
-uniform vec3 sunPosition;
+uniform vec3 shadowLightPosition; // Light position in view space
 
 layout(location = 0) out vec4 fragColor;
 
-vec3 getWorldPos(vec2 uv, float depth) {
+vec3 getViewPos(vec2 uv, float depth) {
     vec4 clipSpace = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
     vec4 viewSpace = gbufferProjectionInverse * clipSpace;
-    viewSpace /= viewSpace.w;
-    vec4 worldSpace = gbufferModelViewInverse * viewSpace;
-    return worldSpace.xyz;
+    return viewSpace.xyz / viewSpace.w;
 }
 
 // CSM & PCSS Shadow Mapping
@@ -99,20 +97,21 @@ void main() {
         return;
     }
 
-    vec3 normal = normalize(normalData.xyz * 2.0 - 1.0);
-    vec3 worldPos = getWorldPos(vTexCoord, depth);
-    vec3 viewDir = normalize(gbufferModelViewInverse[3].xyz - worldPos);
-    vec3 lightDir = normalize(sunPosition);
+    vec3 viewPos = getViewPos(vTexCoord, depth);
+    vec3 worldPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+    
+    vec3 normal = normalize(normalData.xyz * 2.0 - 1.0); // View space normal
+    vec3 viewDir = normalize(-viewPos); // View space view direction
+    vec3 lightDir = normalize(shadowLightPosition); // View space light direction
 
     // Default Material Decoding (Assumes empty maps if none provided)
-    // We would normally read from a dedicated specular buffer (colortex3) but using dummy values here for architecture setup.
     Material mat = decodeLabPBR(vec4(0.0, 0.0, 0.0, 0.0));
 
     // Shadow Mapping
     float shadow = calculateShadow(worldPos, normal, lightDir);
 
     // Direct Lighting (Sun)
-    vec3 sunColor = vec3(1.2, 1.1, 1.0); // Simple sun color
+    vec3 sunColor = vec3(1.2, 1.1, 1.0); 
     vec3 directLighting = evalBRDF(lightDir, viewDir, normal, mat, albedo.rgb) * sunColor * shadow;
     
     // Ambient Lighting (Sky/Block light approximation from lightmaps)
