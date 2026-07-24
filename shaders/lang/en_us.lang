@@ -1,52 +1,152 @@
-# Profiles
-profile.POTATO=Potato
-profile.POTATO.comment=Integrated Graphics | Simple Forward | No Shadows | Maximum FPS
-profile.MEDIUM=Medium
-profile.MEDIUM.comment=GTX 1060 / RX 580 | Deferred Lighting | Opaque Hard Shadows | Bloom
-profile.HIGH=High
-profile.HIGH.comment=Default | Deferred PBR Lighting | Soft PCF Shadows | Bloom + TAA
-profile.ULTRA=Ultra / RTX
-profile.ULTRA.comment=High-end GPUs | Ultra Shadow Map Resolution | Soft PCF Shadows | Bloom + TAA
+# =============================================================================
+# Abyss Shader — en_us.lang
+# Localized labels and performance tooltips for every shaders.txt option.
+# =============================================================================
 
-# Categories
+# ---------------------------------------------------------------------------
+# Profile presets
+# ---------------------------------------------------------------------------
+profile.POTATO=Potato
+profile.POTATO.comment=Integrated graphics target. Forward / cel-shaded lighting, no shadows, no AA, no bloom, no waving foliage. Maximum FPS.
+profile.MEDIUM=Medium
+profile.MEDIUM.comment=GTX 1060 / RX 580 class. Deferred Blinn-Phong, hard CSM shadows, FXAA-class post, light bloom, 8-step POM, 4-sample SSAO. No TAA or PCSS.
+profile.HIGH=High
+profile.HIGH.comment=RTX 3060 / RX 6700 XT class. Full LabPBR 1.3, CSM + PCSS soft shadows, SSR, TAA, filmic tonemapping. Default recommended preset.
+profile.ULTRA=Ultra / RTX
+profile.ULTRA.comment=RTX 4090+ class. Path-traced screen-space GI, 64-step POM, SVGF denoiser, HQ bloom, dense volumetrics, maximum shadow resolution.
+
+# ---------------------------------------------------------------------------
+# Screen / category names
+# ---------------------------------------------------------------------------
 screen.PROFILES=Profiles
 screen.LIGHTING_SHADOWS=Lighting & Shadows
 screen.ATMOSPHERICS=Atmospherics
 screen.PBR_MATERIALS=PBR & Materials
 screen.POST_PROCESSING=Post-Processing
 
-# Options Localization
+# Section headers (shown as non-interactive labels in sub-screens)
+screen.SHADOWS=Shadow & Volumetric Light
+screen.FOG=Sky & Volumetric Fog
+screen.PBR=Material Quality
+screen.TAA=Temporal Anti-Aliasing
+screen.BLOOM=Bloom
+screen.TONEMAP=Tonemapping & Color
+
+# ---------------------------------------------------------------------------
+# Lighting & Shadows
+# ---------------------------------------------------------------------------
 option.SHADOW_MAP_RESOLUTION=Shadow Map Resolution
-option.SHADOW_MAP_RESOLUTION.comment=Controls the resolution of the shadow maps. Higher values increase shadow quality but significantly impact performance.
-value.SHADOW_MAP_RESOLUTION.512=512x
-value.SHADOW_MAP_RESOLUTION.1024=1024x
-value.SHADOW_MAP_RESOLUTION.2048=2048x
-value.SHADOW_MAP_RESOLUTION.4096=4096x
-value.SHADOW_MAP_RESOLUTION.8192=8192x
-value.SHADOW_MAP_RESOLUTION.16384=16384x
-
-option.RENDER_SCALE=Render Scale
-option.RENDER_SCALE.comment=Scales the internal rendering resolution. Lower values improve performance at the cost of visual fidelity.
-
-option.TAA_TOGGLE=Temporal Anti-Aliasing
-option.TAA_TOGGLE.comment=Enables or disables Temporal Anti-Aliasing (TAA) for smoother edges and reduced shimmering.
-value.TAA_TOGGLE.0=Off
-value.TAA_TOGGLE.1=On
-
-option.VOLUMETRIC_FOG_DENSITY=Volumetric Fog Density
-option.VOLUMETRIC_FOG_DENSITY.comment=Controls the density of volumetric fog. Higher density creates more atmospheric effects but can be demanding.
+option.SHADOW_MAP_RESOLUTION.comment=Cascaded shadow map texel resolution. Each doubling roughly quadruples VRAM usage and shadow-pass GPU cost. 512 is free-tier; 16384 is extreme.
+value.SHADOW_MAP_RESOLUTION.512=512 (Potato)
+value.SHADOW_MAP_RESOLUTION.1024=1024 (Low)
+value.SHADOW_MAP_RESOLUTION.2048=2048 (Medium)
+value.SHADOW_MAP_RESOLUTION.4096=4096 (High)
+value.SHADOW_MAP_RESOLUTION.8192=8192 (Ultra)
+value.SHADOW_MAP_RESOLUTION.16384=16384 (Extreme)
 
 option.SHADOW_BLUR=Soft Shadows (PCF)
-option.SHADOW_BLUR.comment=Enables Percentage-Closer Filtering (PCF) to blur shadow map edges, removing pixelated stairs and dynamic flickering.
+option.SHADOW_BLUR.comment=Percentage-Closer Filtering blurs shadow-map edges to remove pixel staircasing. Low cost on Medium hardware; disable for crisp hard shadows.
 value.SHADOW_BLUR.0=Off
 value.SHADOW_BLUR.1=On
 
+option.PCSS_SHADOWS=Soft Shadows (PCSS)
+option.PCSS_SHADOWS.comment=Percentage-Closer Soft Shadows produce variable penumbra based on blocker distance. High GPU cost — recommended for High and Ultra presets only.
+value.PCSS_SHADOWS.0=Off
+value.PCSS_SHADOWS.1=On
+
+option.GODRAY_STEPS=God-Ray Steps
+option.GODRAY_STEPS.comment=Ray-march iterations for crepuscular light shafts through volumetric fog. 0 disables god-rays entirely. Each step samples the shadow map.
+value.GODRAY_STEPS.0=Off
+value.GODRAY_STEPS.4=4 (Low)
+value.GODRAY_STEPS.8=8 (Medium)
+value.GODRAY_STEPS.16=16 (High)
+value.GODRAY_STEPS.32=32 (Ultra)
+
+# ---------------------------------------------------------------------------
+# Atmospherics
+# ---------------------------------------------------------------------------
+option.WAVING_LEAVES=Waving Foliage
+option.WAVING_LEAVES.comment=Procedural vertex wind on leaves, grass, and water. Disabled automatically on Potato to save vertex shader work.
+value.WAVING_LEAVES.0=Off
+value.WAVING_LEAVES.1=On
+
+option.CLOUD_COVERAGE=Cloud Coverage
+option.CLOUD_COVERAGE.comment=Fraction of sky covered by procedural clouds. Higher values darken the scene and increase sky shader cost slightly. 0.0 = clear, 1.0 = overcast.
+
+option.CLOUD_SPEED=Cloud Speed
+option.CLOUD_SPEED.comment=Drift speed of the cloud layer. Purely visual — negligible performance impact.
+
+option.VOLUMETRIC_FOG_DENSITY=Volumetric Fog Density
+option.VOLUMETRIC_FOG_DENSITY.comment=Density of 3D ray-marched atmospheric fog. Higher values increase composite-pass cost and produce thicker haze and god-rays.
+
+# ---------------------------------------------------------------------------
+# PBR & Materials
+# ---------------------------------------------------------------------------
+option.POM_STEPS=Parallax Occlusion Steps
+option.POM_STEPS.comment=Ray-march steps for LabPBR height-map parallax and self-shadowing. 0 disables POM. 64 steps on Ultra gives crisp surface detail at steep viewing angles.
+value.POM_STEPS.0=Off
+value.POM_STEPS.8=8 (Potato/Medium)
+value.POM_STEPS.16=16 (Medium)
+value.POM_STEPS.32=32 (High)
+value.POM_STEPS.64=64 (Ultra)
+
+option.EMISSIVE_BRIGHTNESS=Emissive Brightness
+option.EMISSIVE_BRIGHTNESS.comment=Multiplier for emissive block glow (glowstone, torches, lanterns). Higher values produce brighter halos when bloom is enabled.
+
+option.WETNESS_ROUGHNESS_SCALE=Wet Surface Roughness
+option.WETNESS_ROUGHNESS_SCALE.comment=During rain, upward-facing blocks have roughness scaled by this factor to simulate puddles. Lower values = shinier wet surfaces.
+
+option.SSAO_SAMPLES=SSAO Sample Count
+option.SSAO_SAMPLES.comment=Screen-Space Ambient Occlusion hemisphere samples per pixel. 0 disables SSAO with zero cost. 32 samples on Ultra reduces noise in contact shadows.
+value.SSAO_SAMPLES.0=Off
+value.SSAO_SAMPLES.4=4 (Low)
+value.SSAO_SAMPLES.8=8 (Medium)
+value.SSAO_SAMPLES.16=16 (High)
+value.SSAO_SAMPLES.32=32 (Ultra)
+
+option.AO_STRENGTH=AO Strength
+option.AO_STRENGTH.comment=How strongly ambient occlusion darkens crevices and contact areas. 0.0 = no effect; 1.0 = full darkening.
+
+# ---------------------------------------------------------------------------
+# Post-Processing
+# ---------------------------------------------------------------------------
+option.RENDER_SCALE=Render Scale
+option.RENDER_SCALE.comment=Internal rendering resolution multiplier. Values below 1.0 improve FPS at the cost of sharpness. Values above 1.0 supersample for extra clarity.
+
+option.TAA_TOGGLE=Temporal Anti-Aliasing
+option.TAA_TOGGLE.comment=Accumulates sub-pixel jittered samples across frames to eliminate edge shimmer. Replaces FXAA on High+. Potato preset uses FXAA or no AA instead.
+value.TAA_TOGGLE.0=Off
+value.TAA_TOGGLE.1=On
+
+option.TAA_FEEDBACK=TAA History Weight
+option.TAA_FEEDBACK.comment=Blend weight for the previous frame. Higher = smoother but more ghosting during fast camera movement. 0.9 is the recommended default.
+
 option.BLOOM=Bloom
-option.BLOOM.comment=Enables the bloom glow effect on lights, torches, and emissive surfaces.
+option.BLOOM.comment=Multi-tap Kawase bloom pipeline. Bright emissive surfaces and specular highlights emit a soft glow corona.
 value.BLOOM.0=Off
 value.BLOOM.1=On
 
-option.WAVING_LEAVES=Waving Foliage
-option.WAVING_LEAVES.comment=Enables dynamic wind movement animations on leaves, grass, and water.
-value.WAVING_LEAVES.0=Off
-value.WAVING_LEAVES.1=On
+option.BLOOM_THRESHOLD=Bloom Threshold
+option.BLOOM_THRESHOLD.comment=Minimum luminance for a pixel to contribute to bloom. Lower values spread glow to more surfaces.
+
+option.BLOOM_STRENGTH=Bloom Strength
+option.BLOOM_STRENGTH.comment=Additive weight of the bloom layer. Increase for a dreamier look; decrease for a grounded result.
+
+option.SSR=Screen-Space Reflections
+option.SSR.comment=Ray-marched reflections on rough and smooth surfaces using G-buffer normals and depth. High GPU cost — High and Ultra presets only.
+value.SSR.0=Off
+value.SSR.1=On
+
+option.SSGI_SAMPLES=Screen-Space GI Samples
+option.SSGI_SAMPLES.comment=Stochastic ray count for screen-space global illumination per pixel. 0 disables SSGI. Ultra / RTX tier feature; very expensive at 16 samples.
+value.SSGI_SAMPLES.0=Off
+value.SSGI_SAMPLES.2=2 (Low)
+value.SSGI_SAMPLES.4=4 (Medium)
+value.SSGI_SAMPLES.8=8 (High)
+value.SSGI_SAMPLES.16=16 (Ultra)
+
+option.TONEMAP_EXPOSURE=Tonemap Exposure
+option.TONEMAP_EXPOSURE.comment=Manual exposure offset in EV applied before the filmic / ACES tonemapping curve. Positive values brighten the entire scene.
+
+option.TONEMAP_CONTRAST=Tonemap Contrast
+option.TONEMAP_CONTRAST.comment=Post-tonemap contrast multiplier. Values above 1.0 increase punch; below 1.0 produce a flatter, softer image.

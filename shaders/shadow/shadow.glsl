@@ -14,7 +14,7 @@ float calculateShadows(vec3 playerPos, float nDotL) {
         float dynamicBias = clamp(0.001 * (sqrt(max(1.0 - cosTheta * cosTheta, 0.0)) / cosTheta), 0.001, 0.01);
         
         #if SHADOW_BLUR == 1
-            float mapSize = 1.0 / 2048.0;
+            float mapSize = 1.0 / float(SHADOW_MAP_RESOLUTION);
             float shadowSum = 0.0;
             vec2 offsets[4] = vec2[](
                 vec2(-1.0, -1.0), vec2( 1.0, -1.0),
@@ -26,7 +26,7 @@ float calculateShadows(vec3 playerPos, float nDotL) {
                     shadowSum += 1.0;
                 }
             }
-            shadowIntensity = 1.0 - (shadowSum * 0.22); // Max darken by 88%
+            shadowIntensity = 1.0 - (shadowSum / 4.0) * 0.88; // Max darken by 88%, generic sample normalization
         #else
             float sampledDepth = texture(shadowtex0, shadowCoord.xy).r;
             if (shadowCoord.z - dynamicBias > sampledDepth) {

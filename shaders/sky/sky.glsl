@@ -1,10 +1,9 @@
 // Abyss Shader Sky Rendering module
 
-// Procedural dynamic sky gradient based on look direction and sun elevation
-vec3 getSkyColor(vec3 dir) {
-    vec3 viewDir = normalize(dir);
-    vec3 sunDir  = normalize(sunPosition);
-    float sunElev = sunDir.y;
+// Procedural dynamic sky gradient based on look direction and sun elevation in player (world) space
+vec3 getSkyColor(vec3 worldViewDir, vec3 worldSunDir) {
+    vec3 viewDir = normalize(worldViewDir);
+    float sunElev = worldSunDir.y;
     float viewElev = viewDir.y;
     
     vec3 daySkyTop = vec3(0.1, 0.4, 0.8);

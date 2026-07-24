@@ -1,8 +1,7 @@
-// Abyss Shader Atmospheric Distance Fog module
+// Abyss Shader — Atmospheric Distance Fog module
 
-uniform int isEyeInWater; // 1 = Camera is underwater, 2 = Camera in lava, 0 = Camera in air
-
-// Applies distance-based linear fog synced to native Minecraft colors and render distance
+// Applies distance-based linear fog synced to native Minecraft colours and render distance.
+// isEyeInWater is declared in common/common.glsl.
 vec3 applyDistanceFog(vec3 color, vec3 viewPos, vec3 nativeFogColor) {
     float distance = length(viewPos);
     

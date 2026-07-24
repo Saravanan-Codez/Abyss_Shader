@@ -32,25 +32,31 @@ Material decodeLabPBR(vec4 specularMap) {
     return mat;
 }
 
-// Parallax Occlusion Mapping
 vec2 getParallaxCoords(vec2 texCoords, vec3 viewDirTangent, sampler2D heightMap, float heightScale) {
-    int maxSteps = 8; // Fallback
+    int maxSteps = 8;
+    int minSteps = 4;
     
-    #ifdef PROFILE_MEDIUM
-        maxSteps = 8;
-    #elif defined(PROFILE_HIGH)
+    #if defined(MEDIUM)
+        maxSteps = 16;
+        minSteps = 8;
+    #elif defined(HIGH)
         maxSteps = 32;
-    #elif defined(PROFILE_ULTRA)
+        minSteps = 12;
+    #elif defined(ULTRA)
         maxSteps = 64;
+        minSteps = 16;
     #endif
 
-    float layerDepth = 1.0 / float(maxSteps);
+    // Scale step count dynamically based on the view angle (increases steps at grazing angles)
+    int steps = int(mix(float(maxSteps), float(minSteps), abs(viewDirTangent.z)));
+    float layerDepth = 1.0 / float(steps);
     float currentLayerDepth = 0.0;
     vec2 P = viewDirTangent.xy * heightScale;
     vec2 currentTexCoords = texCoords;
     float currentDepthMapValue = texture(heightMap, currentTexCoords).a;
 
     for (int i = 0; i < maxSteps; ++i) {
+        if (i >= steps) break; // Dynamic early exit
         if (currentLayerDepth >= currentDepthMapValue) break;
         currentTexCoords -= P * layerDepth;
         currentDepthMapValue = texture(heightMap, currentTexCoords).a;

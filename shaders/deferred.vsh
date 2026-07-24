@@ -1,0 +1,9 @@
+#version 150 compatibility
+#include "/shaders.settings"
+
+out vec2 vTexCoord;
+
+void main() {
+    vTexCoord = gl_MultiTexCoord0.st;
+    gl_Position = ftransform();
+}

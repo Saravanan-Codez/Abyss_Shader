@@ -1,22 +1,132 @@
-// Default settings for Shadow Map Resolution
+// =============================================================================
+// Abyss Shader — shaders.settings
+// Configurable #defines injected into every shader pass via #include.
+// Value lists in trailing comments become Iris slider / dropdown ranges.
+// =============================================================================
+
+// =============================================================================
+// PROFILE TIER SYSTEM
+// Iris defines exactly one of POTATO / MEDIUM / HIGH / ULTRA when a preset
+// is selected (see shaders.properties). Map those to canonical PROFILE_* macros
+// that all GLSL passes inherit.
+// =============================================================================
+
+#if defined(POTATO)
+    #define PROFILE_POTATO 1
+    #define PROFILE_TIER 0
+#elif defined(MEDIUM)
+    #define PROFILE_MEDIUM 1
+    #define PROFILE_TIER 1
+#elif defined(HIGH)
+    #define PROFILE_HIGH 1
+    #define PROFILE_TIER 2
+#elif defined(ULTRA)
+    #define PROFILE_ULTRA 1
+    #define PROFILE_TIER 3
+#else
+    // Fallback when no preset is active — behave as High tier
+    #define PROFILE_HIGH 1
+    #define PROFILE_TIER 2
+#endif
+
+// Derived feature gates (overridable by individual toggles below)
+#if PROFILE_TIER == 0
+    #define FORWARD_LIGHTING 1
+    #define DEFERRED_PIPELINE 0
+#else
+    #define FORWARD_LIGHTING 0
+    #define DEFERRED_PIPELINE 1
+#endif
+
+// Potato skips all shadow sampling; Medium+ uses CSM
+#if PROFILE_TIER >= 1
+    #define ROBUST_SHADOWS 1
+#else
+    #define ROBUST_SHADOWS 0
+#endif
+
+// -----------------------------------------------------------------------------
+// SHADOWS
+// -----------------------------------------------------------------------------
+
+// Shadow map texel resolution. Higher = sharper edges, more VRAM.
 #define SHADOW_MAP_RESOLUTION 2048 // [512 1024 2048 4096 8192 16384]
 
-// Default settings for Render Scale
-#define RENDER_SCALE 1.0 // [0.5 0.75 1.0 1.5 2.0]
-
-// Default settings for TAA Toggle
-#define TAA_TOGGLE 1 // [0 1]
-
-// Default settings for Volumetric Fog Density
-#define VOLUMETRIC_FOG_DENSITY 0.5 // [0.0 0.1 0.25 0.5 0.75 1.0]
-
-// --- CONFIGURABLE FEATURE TOGGLES ---
-
-// Enable or disable Percentage-Closer Filtering (PCF) soft shadow blur
+// Percentage-Closer Filtering: softens hard shadow edges.
 #define SHADOW_BLUR 1 // [0 1]
 
-// Enable or disable the bloom screen-space glow filter
+// Percentage-Closer Soft Shadows — variable penumbra (High / Ultra tier).
+// Automatically forced off on Potato and Medium via profile overrides.
+#define PCSS_SHADOWS 1 // [0 1]
+
+// Ray-march step count for volumetric god-rays. 0 = disabled.
+#define GODRAY_STEPS 8 // [0 4 8 16 32]
+
+// Density of ray-marched volumetric fog / light scatter.
+#define VOLUMETRIC_FOG_DENSITY 0.5 // [0.0 0.1 0.25 0.5 0.75 1.0]
+
+// -----------------------------------------------------------------------------
+// ATMOSPHERICS
+// -----------------------------------------------------------------------------
+
+// Procedural wind animation on leaves, grass, and water vertices.
+#define WAVING_LEAVES 1 // [0 1]
+
+// Fraction of sky covered by procedural clouds. 0 = clear.
+#define CLOUD_COVERAGE 0.5 // [0.0 0.25 0.5 0.75 1.0]
+
+// Cloud layer drift speed multiplier.
+#define CLOUD_SPEED 0.3 // [0.1 0.2 0.3 0.5 0.8]
+
+// -----------------------------------------------------------------------------
+// PBR & MATERIALS (LabPBR 1.3)
+// -----------------------------------------------------------------------------
+
+// Parallax Occlusion Mapping ray-march steps. 0 = disabled.
+#define POM_STEPS 32 // [0 8 16 32 64]
+
+// Emissive block glow multiplier (glowstone, torches, sea lanterns, etc.).
+#define EMISSIVE_BRIGHTNESS 3.0 // [0.5 1.0 1.5 2.0 3.0 4.0 6.0]
+
+// Wet-surface roughness scale during rain (applied to upward-facing blocks).
+#define WETNESS_ROUGHNESS_SCALE 0.35 // [0.1 0.25 0.35 0.5 0.75 1.0]
+
+// Screen-Space Ambient Occlusion sample count. 0 = disabled.
+#define SSAO_SAMPLES 8 // [0 4 8 16 32]
+
+// AO darkening strength in occluded crevices.
+#define AO_STRENGTH 0.6 // [0.0 0.2 0.4 0.6 0.8 1.0]
+
+// -----------------------------------------------------------------------------
+// POST-PROCESSING
+// -----------------------------------------------------------------------------
+
+// Internal render resolution scale. Below 1.0 trades sharpness for FPS.
+#define RENDER_SCALE 1.0 // [0.5 0.75 1.0 1.25 1.5 2.0]
+
+// Temporal Anti-Aliasing master toggle.
+#define TAA_TOGGLE 1 // [0 1]
+
+// TAA history blend weight. Higher = smoother, more ghosting on fast motion.
+#define TAA_FEEDBACK 0.9 // [0.7 0.75 0.8 0.85 0.9 0.95]
+
+// Multi-stage Kawase bloom pipeline.
 #define BLOOM 1 // [0 1]
 
-// Enable or disable leaves and grass waving animations
-#define WAVING_LEAVES 1 // [0 1]
+// Luminance threshold — only pixels above this contribute to bloom.
+#define BLOOM_THRESHOLD 0.9 // [0.5 0.7 0.9 1.0 1.2 1.5]
+
+// Bloom additive blend strength.
+#define BLOOM_STRENGTH 0.04 // [0.01 0.02 0.04 0.06 0.08 0.10]
+
+// Screen-Space Reflections (High / Ultra). 0 = off.
+#define SSR 1 // [0 1]
+
+// Screen-space GI ray count per pixel (Ultra tier). 0 = disabled.
+#define SSGI_SAMPLES 4 // [0 2 4 8 16]
+
+// Filmic tonemapping manual exposure offset (EV).
+#define TONEMAP_EXPOSURE 0.0 // [-2.0 -1.0 0.0 0.5 1.0 2.0]
+
+// Post-tonemap contrast correction.
+#define TONEMAP_CONTRAST 1.05 // [0.8 0.9 1.0 1.05 1.1 1.2 1.3]

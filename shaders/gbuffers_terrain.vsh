@@ -11,7 +11,7 @@ uniform float frameTimeCounter;
 void main() {
     vColor = gl_Color;
     vTexCoord = gl_MultiTexCoord0.st;
-    vLightmapCoord = gl_MultiTexCoord1.xy;
+    vLightmapCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 
     vec4 position = gl_Vertex;
 

@@ -1,15 +1,44 @@
-# Presets mapping in the GUI
+# =============================================================================
+# Abyss Shader — shaders.txt
+# Iris / OptiFine GUI layout. Each screen line lists options on that page.
+# Profile presets appear automatically via profile.* entries below.
+# =============================================================================
+
+# Performance preset selector (injected by Iris as POTATO / MEDIUM / HIGH / ULTRA)
 profile.Potato=Potato
 profile.Medium=Medium
 profile.High=High
 profile.Ultra=Ultra
 
-# Sliders exposing properties
-sliders=SHADOW_MAP_RESOLUTION RENDER_SCALE TAA_TOGGLE VOLUMETRIC_FOG_DENSITY
+# Continuous slider controls (values defined in shaders.settings comment ranges)
+sliders=RENDER_SCALE VOLUMETRIC_FOG_DENSITY AO_STRENGTH TAA_FEEDBACK BLOOM_THRESHOLD BLOOM_STRENGTH EMISSIVE_BRIGHTNESS CLOUD_COVERAGE CLOUD_SPEED TONEMAP_EXPOSURE TONEMAP_CONTRAST WETNESS_ROUGHNESS_SCALE
 
-# Grouping settings into screens/categories in the menu
+# ---------------------------------------------------------------------------
+# Main menu — category navigation
+# ---------------------------------------------------------------------------
+screen=PROFILES LIGHTING_SHADOWS ATMOSPHERICS PBR_MATERIALS POST_PROCESSING
+
+# ---------------------------------------------------------------------------
+# Profiles — preset summary (profile dropdown renders above all screens)
+# ---------------------------------------------------------------------------
 screen.PROFILES=
-screen.LIGHTING_SHADOWS=SHADOW_MAP_RESOLUTION SHADOW_BLUR
-screen.ATMOSPHERICS=VOLUMETRIC_FOG_DENSITY WAVING_LEAVES
-screen.PBR_MATERIALS=
-screen.POST_PROCESSING=RENDER_SCALE BLOOM TAA_TOGGLE
+
+# ---------------------------------------------------------------------------
+# Lighting & Shadows
+# ---------------------------------------------------------------------------
+screen.LIGHTING_SHADOWS=SHADOW_MAP_RESOLUTION SHADOW_BLUR PCSS_SHADOWS GODRAY_STEPS [SHADOWS]
+
+# ---------------------------------------------------------------------------
+# Atmospherics — sky, clouds, volumetric fog
+# ---------------------------------------------------------------------------
+screen.ATMOSPHERICS=WAVING_LEAVES CLOUD_COVERAGE CLOUD_SPEED VOLUMETRIC_FOG_DENSITY [FOG]
+
+# ---------------------------------------------------------------------------
+# PBR & Materials — LabPBR, parallax, contact shading
+# ---------------------------------------------------------------------------
+screen.PBR_MATERIALS=POM_STEPS EMISSIVE_BRIGHTNESS SSAO_SAMPLES AO_STRENGTH [PBR]
+
+# ---------------------------------------------------------------------------
+# Post-Processing — AA, bloom, tonemapping, render scale
+# ---------------------------------------------------------------------------
+screen.POST_PROCESSING=RENDER_SCALE TAA_TOGGLE TAA_FEEDBACK [TAA] BLOOM BLOOM_THRESHOLD BLOOM_STRENGTH [BLOOM] SSR SSGI_SAMPLES TONEMAP_EXPOSURE TONEMAP_CONTRAST [TONEMAP]
