@@ -150,20 +150,17 @@ vec3 drawStars(vec3 viewDir, float sunElev) {
 // ---------------------------------------------------------------------------
 #if !defined(POTATO)
 
-// Cloud FBM octave count by profile
-int cloudOctaves() {
-    #if defined(ULTRA)
-        return 3;
-    #elif defined(HIGH)
-        return 2;
-    #else // MEDIUM
-        return 1;
-    #endif
-}
-
 vec4 drawClouds(vec3 viewDir, vec3 sunDir, float sunElev) {
     // Only render clouds in the upper hemisphere
     if (viewDir.y < 0.02) return vec4(0.0);
+
+    // Cloud FBM octave count determined at compile-time by profile tier
+    int cloudOctaves = 1; // MEDIUM default
+    #if defined(ULTRA)
+        cloudOctaves = 3;
+    #elif defined(HIGH)
+        cloudOctaves = 2;
+    #endif
 
     // Cloud layer is a virtual flat plane at a normalised height.
     // We project the view ray onto that plane using Y component.
@@ -177,7 +174,7 @@ vec4 drawClouds(vec3 viewDir, vec3 sunDir, float sunElev) {
     // Scale UVs to control cloud size
     cloudUV *= 0.6;
 
-    float density  = fbm(cloudUV, cloudOctaves());
+    float density  = fbm(cloudUV, cloudOctaves);
 
     // Remap density to a coverage-controlled binary-ish shape
     float coverage = smoothstep(1.0 - CLOUD_COVERAGE, 1.0, density);

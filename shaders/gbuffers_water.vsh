@@ -17,10 +17,11 @@ void main() {
     vec4 position = gl_Vertex;
 
     #if WAVING_LEAVES == 1
-        if (gl_Color.b > 0.8 && gl_Color.r < 0.3) {
-            float time = frameTimeCounter * 3.0;
-            position.y += sin(time + position.x * 2.0 + position.z * 2.0) * 0.05;
-        }
+        // gbuffers_water.vsh only processes water geometry — no colour guard needed.
+        // The blue-channel heuristic was unreliable across biomes and suppressed
+        // wave animation on most naturally tinted water surfaces.
+        float time = frameTimeCounter * 3.0;
+        position.y += sin(time + position.x * 2.0 + position.z * 2.0) * 0.05;
     #endif
 
     gl_Position = gl_ModelViewProjectionMatrix * position;

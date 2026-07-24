@@ -121,10 +121,16 @@ void main() {
         
         // Calculate wave offset for refraction (distorts underwater terrain)
         vec2 refractedCoord = applyWaterRefraction(vTexCoord, waterWaveNormal);
+        // Clamp to valid UV range — large wave normals can push coords off-screen,
+        // causing undefined texture fetches on some drivers.
+        refractedCoord = clamp(refractedCoord, vec2(0.001), vec2(0.999));
         
-        // Sample albedo using refracted coordinates to create water wobble
+        // Sample albedo using refracted coordinates to create water wobble.
+        // Guard: only replace if the refracted sample has actual geometry behind it
+        // (deeper than the water surface) — prevents sampling sky or geometry in front
+        // of the water surface through the floor.
         float refractedDepth = texture(depthtex1, refractedCoord).r;
-        if (refractedDepth < 1.0) {
+        if (refractedDepth < 1.0 && refractedDepth > depth) {
             albedo = texture(colortex0, refractedCoord);
         }
     }

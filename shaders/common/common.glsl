@@ -12,8 +12,6 @@ uniform sampler2D depthtex0; // Opaque Depth
 uniform sampler2D depthtex1; // Translucent Depth
 uniform sampler2D shadowtex0; // Shadow Map
 
-uniform sampler2D lightmap;
-
 uniform vec3 sunPosition;
 
 uniform mat4 gbufferProjection;

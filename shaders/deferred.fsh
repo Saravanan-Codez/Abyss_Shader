@@ -40,7 +40,7 @@ vec3 reprojectUV(vec2 uv, float depth) {
     // Transform to player (world-relative) space
     vec3 playerPos = reconstructPlayerPos(viewPos);
     // Shift by camera delta to get previous-frame player position
-    vec3 prevPlayerPos = playerPos + (cameraPosition - previousCameraPosition);
+    vec3 prevPlayerPos = playerPos + (previousCameraPosition - cameraPosition);
     // Project through previous frame matrices
     vec4 prevClip = gbufferPreviousProjection * gbufferPreviousModelView * vec4(prevPlayerPos, 1.0);
     prevClip.xyz /= prevClip.w;
